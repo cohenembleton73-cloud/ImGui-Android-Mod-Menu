@@ -1,1 +1,29 @@
+name: Build Android NDK
 
+on:
+  push:
+    branches: [ "master", "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up NDK
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r21e
+
+    - name: Build with ndk-build
+      run: |
+        cd app/src/main/jni
+        $ANDROID_NDK_HOME/ndk-build
+
+    - name: Upload .so Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Compiled-Mod-Menu
+        path: app/src/main/libs/
